@@ -20,6 +20,7 @@ Scenario: Crank Sold Out
 	And I turn the crank
 	And a gumball is not dispensed
 	Then it is empty
+	And it returns my quarter
 	And it has no quarter
 	And the display reads "There are no Gumballs, please pick up your Quarter"
 

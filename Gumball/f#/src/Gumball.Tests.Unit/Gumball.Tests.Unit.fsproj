@@ -52,6 +52,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Content Include="packages.config" />
+    <Compile Include="StateChangeTests.fs" />
     <Compile Include="SoldOutGumballTests.fs" />
     <Compile Include="RefillGumballTests.fs" />
     <Compile Include="QuarterGumballTests.fs" />

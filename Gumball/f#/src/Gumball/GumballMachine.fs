@@ -3,6 +3,7 @@
 module GumballMachine =
     
     open System
+    open System.ComponentModel
     open System.Diagnostics
 
     open Archient.DesignPatterns.Gumball.Hardware
@@ -121,11 +122,11 @@ module GumballMachine =
 
         {
             IsEmpty = state.IsEmpty
-            HasQuarter = false
+            HasQuarter = state.HasQuarter
             IsDispensing = false
             Message = message }
 
-    let private onHardwareEvent (e:GumballEvent) (state:GumballMachineState ref) (hardware:IGumballHardware) =
+    let private onHardwareEvent (e:GumballEvent) (state:GumballMachineState ref) (onStateChanged:unit->unit) (hardware:IGumballHardware) =
         
         Trace.TraceInformation(sprintf "onHardwareEvent: %A" (e.GetType().Name))
         
@@ -133,6 +134,7 @@ module GumballMachine =
 
         | :? RefillGumballsEvent -> 
             state := onRefill !state
+            onStateChanged()
 
         | :? InsertQuarterEvent ->  
             
@@ -144,6 +146,7 @@ module GumballMachine =
                 hardware.OnNext(Input.ReturnQuarterEvent())
 
             state := onInsertQuarter !state
+            onStateChanged()
 
         | :? EjectQuarterEvent -> 
             
@@ -151,12 +154,15 @@ module GumballMachine =
             hardware.OnNext(Input.ReturnQuarterEvent())
 
             state := onEjectQuarter !state
+            onStateChanged()
 
         | :? TurnCrankEvent -> 
             state := onTurnCrank !state
+            onStateChanged()
 
         | :? GumballDispensedEvent -> 
             state := onGumballDispensed !state
+            onStateChanged()
 
         | :? OutOfGumballsEvent -> 
             
@@ -164,12 +170,14 @@ module GumballMachine =
                 hardware.OnNext(Input.ReturnQuarterEvent())
 
             state := onOutOfGumballs !state
+            onStateChanged()
 
         | :? TakeGumballEvent -> 
             state := onTakeGumball !state
+            onStateChanged()
 
         | _ -> 
-            ()
+            () // unrecognized event
 
     let create (hardware:IGumballHardware) =
 
@@ -181,12 +189,29 @@ module GumballMachine =
                 IsDispensing = false
                 Message = Messages.SoldOut.Start }
         
+        // need a reference value, b/c of recursive dependencies*
+        // 'onStateChanged' depends on 'machine'
+        // 'subscription' depends on 'onStateChanged'
+        // 'machine' depends on 'subscription'*
+        let machine = ref Unchecked.defaultof<IGumballMachine>
+        
+        let propertyChanged = Event<PropertyChangedEventHandler, PropertyChangedEventArgs>()
+
+        // notify clients that the state changed (in case they are intersted)
+        let onStateChanged () =
+            propertyChanged.Trigger(machine.Value, new PropertyChangedEventArgs("State"))
+
         // listen to hardware events
         // mutate the state whenever on known hardware event
         let subscription =
-            hardware.Subscribe(fun e -> onHardwareEvent e state hardware)
+            hardware.Subscribe(fun e -> onHardwareEvent e state onStateChanged hardware)
         
-        { new IGumballMachine with
-            override me.Hardware = hardware
-            override me.State = !state
-            override me.Dispose() = subscription.Dispose() }
+        machine :=
+            { new IGumballMachine with
+                override me.add_PropertyChanged(handler) = propertyChanged.Publish.AddHandler(handler)
+                override me.remove_PropertyChanged(handler) = propertyChanged.Publish.RemoveHandler(handler)
+                override me.Hardware = hardware
+                override me.State = !state
+                override me.Dispose() = subscription.Dispose() }
+
+        machine.Value
