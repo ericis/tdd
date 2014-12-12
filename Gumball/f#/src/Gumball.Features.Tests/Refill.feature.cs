@@ -86,11 +86,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 8
  testRunner.When("I refill it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 9
- testRunner.Then("it is not empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 10
- testRunner.And("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 11
- testRunner.And("the display reads \"Quarter for a Gumball\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Then("the display reads \"Quarter for a Gumball\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -101,18 +97,16 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void RefillInsertQuarter()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Refill, Insert Quarter", ((string[])(null)));
-#line 13
+#line 11
 this.ScenarioSetup(scenarioInfo);
-#line 14
+#line 12
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 15
+#line 13
  testRunner.When("I refill it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 16
+#line 14
  testRunner.And("I insert a quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 17
- testRunner.Then("it has a quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 18
- testRunner.And("the display reads \"Turn the Crank for a Gumball\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 15
+ testRunner.Then("the display reads \"Turn the Crank for a Gumball\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -123,18 +117,16 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void RefillEjectQuarter()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Refill, Eject Quarter", ((string[])(null)));
-#line 20
+#line 17
 this.ScenarioSetup(scenarioInfo);
-#line 21
+#line 18
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 22
+#line 19
  testRunner.When("I refill it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 23
+#line 20
  testRunner.And("I eject a quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 24
- testRunner.Then("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 25
- testRunner.And("the display reads \"You haven\'t inserted a Quarter yet\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 21
+ testRunner.Then("the display reads \"You haven\'t inserted a Quarter yet\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -145,18 +137,16 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void RefillTurnCrank()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Refill, Turn Crank", ((string[])(null)));
-#line 27
+#line 23
 this.ScenarioSetup(scenarioInfo);
-#line 28
+#line 24
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 29
+#line 25
  testRunner.When("I refill it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 30
+#line 26
  testRunner.And("I turn the crank", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 31
- testRunner.Then("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 32
- testRunner.And("the display reads \"You need to pay first\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 27
+ testRunner.Then("the display reads \"You need to pay first\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -167,18 +157,16 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void RefillTakeGumball()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Refill, Take Gumball", ((string[])(null)));
-#line 34
+#line 29
 this.ScenarioSetup(scenarioInfo);
-#line 35
+#line 30
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 36
+#line 31
  testRunner.When("I refill it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 37
+#line 32
  testRunner.And("I try to take a gumball", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 38
- testRunner.Then("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 39
- testRunner.And("the display reads \"Quarter first, then a Gumball\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 33
+ testRunner.Then("the display reads \"Quarter first, then a Gumball\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

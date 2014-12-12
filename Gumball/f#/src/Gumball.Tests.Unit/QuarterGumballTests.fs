@@ -20,34 +20,16 @@ module QuarterGumballTests =
         |> assertIsTrue (fun x -> receivedReturnQuarterEvent.Value)
         |> dispose
 
-    let [<Fact>] ``quarter: insert 2nd quarter, has quarter``() = 
-        
-        GumballTests.createFullMachineWithQuarterAndInsertQuarter()
-        |> assertIsTrue (fun x -> x.State.HasQuarter)
-        |> dispose
-
     let [<Fact>] ``quarter: insert 2nd quarter, displays already has quarter``() = 
         
         GumballTests.createFullMachineWithQuarterAndInsertQuarter()
         |> GumballTests.assertLastDisplayMessageEquals Messages.Quarter.Quarter
         |> dispose
 
-    let [<Fact>] ``quarter: eject quarter, has no quarter``() = 
-        
-        GumballTests.createFullMachineWithQuarterAndEjectQuarter()
-        |> assertIsFalse (fun x -> x.State.HasQuarter)
-        |> dispose
-
     let [<Fact>] ``quarter: eject quarter, displays pick-up quarter``() = 
         
         GumballTests.createFullMachineWithQuarterAndEjectQuarter()
         |> GumballTests.assertLastDisplayMessageEquals Messages.Quarter.Eject
-        |> dispose
-
-    let [<Fact>] ``quarter: turn crank, has quarter``() = 
-        
-        GumballTests.createFullMachineWithQuarterAndTurnCrank()
-        |> assertIsTrue (fun x -> x.State.HasQuarter)
         |> dispose
 
     let [<Fact>] ``quarter: turn crank w/o gumball, displays sold out w/ quarter``() = 

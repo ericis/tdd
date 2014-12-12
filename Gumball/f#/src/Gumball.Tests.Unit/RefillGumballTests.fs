@@ -7,22 +7,10 @@ module RefillGumballTests =
     
     open Archient.DesignPatterns.Gumball.Hardware.Events.Output
 
-    let [<Fact>] ``refill: has gumballs``() = 
-        
-        GumballTests.createFullMachine()
-        |> assertIsFalse (fun x -> x.State.IsEmpty)
-        |> dispose
-
     let [<Fact>] ``refill: displays no quarter``() = 
         
         GumballTests.createFullMachine()
         |> GumballTests.assertLastDisplayMessageEquals Messages.Ready.Start
-        |> dispose
-
-    let [<Fact>] ``refill: insert quarter, has quarter``() = 
-        
-        GumballTests.createFullMachineAndInsertQuarter()
-        |> assertIsTrue (fun x -> x.State.HasQuarter)
         |> dispose
 
     let [<Fact>] ``refill: insert quarter, displays turn crank``() = 

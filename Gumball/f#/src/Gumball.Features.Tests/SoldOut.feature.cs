@@ -84,11 +84,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 7
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 8
- testRunner.Then("it is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 9
- testRunner.And("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 10
- testRunner.And("the display reads \"Sorry, the machine is sold out\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Then("the display reads \"Sorry, the machine is sold out\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -99,17 +95,15 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void InitialStateInsertQuarter()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Initial State, Insert Quarter", ((string[])(null)));
-#line 12
+#line 10
 this.ScenarioSetup(scenarioInfo);
-#line 13
+#line 11
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 14
+#line 12
  testRunner.When("I insert a quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 15
+#line 13
  testRunner.Then("it returns my quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 16
- testRunner.And("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 17
+#line 14
  testRunner.And("the display reads \"There are no Gumballs, please pick up your Quarter\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
@@ -121,16 +115,14 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void InitialStateEjectQuarter()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Initial State, Eject Quarter", ((string[])(null)));
-#line 19
+#line 16
 this.ScenarioSetup(scenarioInfo);
-#line 20
+#line 17
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 21
+#line 18
  testRunner.When("I eject a quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 22
- testRunner.Then("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 23
- testRunner.And("the display reads \"This is not a Slot machine\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 19
+ testRunner.Then("the display reads \"This is not a Slot machine\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -141,16 +133,14 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void InitialStateTurnCrank()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Initial State, Turn Crank", ((string[])(null)));
-#line 25
+#line 21
 this.ScenarioSetup(scenarioInfo);
-#line 26
+#line 22
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 27
+#line 23
  testRunner.When("I turn the crank", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 28
- testRunner.Then("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 29
- testRunner.And("the display reads \"There are no Gumballs\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 24
+ testRunner.Then("the display reads \"There are no Gumballs\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -161,16 +151,14 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void InitialStateTakeGumball()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Initial State, Take Gumball", ((string[])(null)));
-#line 31
+#line 26
 this.ScenarioSetup(scenarioInfo);
-#line 32
+#line 27
  testRunner.Given("I have a new gumball machine", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 33
+#line 28
  testRunner.When("I try to take a gumball", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 34
- testRunner.Then("it has no quarter", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 35
- testRunner.And("the display reads \"I can\'t give you what I don\'t have\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 29
+ testRunner.Then("the display reads \"I can\'t give you what I don\'t have\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

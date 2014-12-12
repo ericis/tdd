@@ -9,26 +9,27 @@ module GumballMachine =
     open Archient.DesignPatterns.Gumball.Hardware
     open Archient.DesignPatterns.Gumball.Hardware.Events
     open Archient.DesignPatterns.Gumball.Hardware.Events.Output
+    
+    type private GumballMachineState = 
+        {
+            IsEmpty: bool
+            HasQuarter: bool
+            IsDispensing: bool }
 
     let private onRefill (hardware:IGumballHardware) (state:GumballMachineState ref) =
+        
+        Trace.TraceInformation(sprintf "onRefill: %A" state)
         
         hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Start))
 
         {
             IsEmpty = false
-            HasQuarter = false
+            HasQuarter = state.Value.HasQuarter
             IsDispensing = false }
 
     let private onInsertQuarter (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
         Trace.TraceInformation(sprintf "onInsertQuarter: %A" state)
-            
-        // return quarter if
-        //   - machine is empty
-        //   - already has a quarter
-        //   - machine is dispensing gumball
-        if state.Value.IsEmpty || state.Value.HasQuarter || state.Value.IsDispensing then
-            hardware.OnNext(Input.ReturnQuarterEvent())
 
         let message = 
             match state.Value.IsEmpty with
@@ -40,9 +41,16 @@ module GumballMachine =
                     match state.Value.IsDispensing with
                     | true -> Messages.Crank.Quarter
                     | false -> Messages.Ready.Quarter
+        
+        // return quarter if
+        //   - machine is empty
+        //   - already has a quarter
+        //   - machine is dispensing gumball
+        if state.Value.IsEmpty || state.Value.HasQuarter || state.Value.IsDispensing then
+            hardware.OnNext(Input.ReturnQuarterEvent())
                     
         hardware.OnNext(Input.DisplayMessageEvent(message))
-
+        
         {
             IsEmpty = state.Value.IsEmpty
             HasQuarter = not state.Value.IsEmpty && not state.Value.IsDispensing
@@ -51,9 +59,6 @@ module GumballMachine =
     let private onEjectQuarter (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
         Trace.TraceInformation(sprintf "onEjectQuarter: %A" state)
-            
-        // return quarter
-        hardware.OnNext(Input.ReturnQuarterEvent())
 
         let message = 
             match state.Value.IsEmpty with
@@ -65,6 +70,9 @@ module GumballMachine =
                     match state.Value.IsDispensing with
                     | true -> Messages.Crank.Eject
                     | false -> Messages.Ready.Eject
+            
+        // return quarter
+        hardware.OnNext(Input.ReturnQuarterEvent())
 
         hardware.OnNext(Input.DisplayMessageEvent(message))
 
@@ -89,7 +97,7 @@ module GumballMachine =
                     | false -> Messages.Ready.Crank
 
         hardware.OnNext(Input.DisplayMessageEvent(message))
-
+        
         {
             IsEmpty = state.Value.IsEmpty
             HasQuarter = state.Value.HasQuarter
@@ -140,7 +148,7 @@ module GumballMachine =
                     | false -> Messages.Ready.Take
 
         hardware.OnNext(Input.DisplayMessageEvent(message))
-
+        
         {
             IsEmpty = state.Value.IsEmpty
             HasQuarter = state.Value.HasQuarter
@@ -148,8 +156,7 @@ module GumballMachine =
 
     let private onDisplay (message:string) (state:GumballMachineState ref) =
         
-        Trace.TraceInformation(sprintf "onDisplay: %A" state)
-        Trace.TraceInformation(sprintf "message: %s" message)
+        Trace.TraceInformation(sprintf "onDisplay: %s" message)
         
         {
             IsEmpty = state.Value.IsEmpty
@@ -221,7 +228,6 @@ module GumballMachine =
                 override me.add_PropertyChanged(handler) = propertyChanged.Publish.AddHandler(handler)
                 override me.remove_PropertyChanged(handler) = propertyChanged.Publish.RemoveHandler(handler)
                 override me.Hardware = hardware
-                override me.State = !state
                 override me.Dispose() = subscription.Dispose() }
         
         hardware.OnNext(Input.DisplayMessageEvent(Messages.SoldOut.Start))

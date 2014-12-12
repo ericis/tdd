@@ -10,8 +10,6 @@ module GumballTests =
     open Archient.DesignPatterns.Gumball.Hardware
     open Archient.DesignPatterns.Gumball.Hardware.Events
 
-    let private lastMessage = ref ""
-
     let listenForEvent<'t when 't :> GumballEvent> (handler:'t->unit) (hardware:IGumballHardware) =
         
         // add listener
@@ -34,30 +32,37 @@ module GumballTests =
 
         machine
 
-    let listenForDisplayMessage (message:string ref) (hardware:IGumballHardware) =
+    type ITestHardware =
+        inherit IGumballHardware
+
+        abstract member LastMessage : string ref with get
+
+    let listenForDisplayMessage (hardware:ITestHardware) =
         
         hardware
         |> listenForEvent<Input.DisplayMessageEvent> (fun e -> 
-            message := e.Value
-            System.Diagnostics.Trace.TraceInformation(sprintf "Tests: DisplayMessageEvent(%s)" message.Value))
-
-    let getLastDisplayMessage() = 
-        lastMessage.Value
+            hardware.LastMessage := e.Value
+            System.Diagnostics.Trace.TraceInformation(sprintf "Tests: DisplayMessageEvent(%s)" hardware.LastMessage.Value))
 
     let assertLastDisplayMessageEquals (expected:string) (machine:IGumballMachine) =
         
         machine
-        |> assertAreEqual expected (fun x -> lastMessage.Value)
+        |> assertAreEqual expected (fun x -> (x.Hardware :?> ITestHardware).LastMessage.Value)
 
     let createTestHardware() =
+        
+        let lastMessage = ref ""
+
         // state: list of subscribers
         let subscribers = 
             new List<IObserver<GumballEvent>>()
         
         // new hardware for tests
         // (closure of 'subscribers')
-        { new IGumballHardware with
+        { new ITestHardware with
             
+            override me.LastMessage = lastMessage
+
             override me.OnCompleted() = 
                 // notify all: complete
                 subscribers
@@ -85,7 +90,7 @@ module GumballTests =
                             // remove subscriber on disposal
                             ignore <| subscribers.Remove(subscriber)
                 } }
-        |> listenForDisplayMessage lastMessage
+        |> listenForDisplayMessage
 
     let listenForPropertyChanged (name:string) (notifier:bool ref) (machine:IGumballMachine) =
         

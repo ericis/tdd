@@ -64,26 +64,6 @@ module FeatureSteps =
             machine.Value
             |> GumballTests.raiseEvents [|Output.TakeGumballEvent()|]
 
-    let [<Then>] ``it is not empty`` () =
-
-        machine.Value.State.IsEmpty
-        |> assertFalse
-
-    let [<Then>] ``it is empty`` () =
-
-        machine.Value.State.IsEmpty
-        |> assertTrue
-
-    let [<Then>] ``it has a quarter`` () =
-
-        machine.Value.State.HasQuarter
-        |> assertTrue
-
-    let [<Then>] ``it has no quarter`` () =
-
-        machine.Value.State.HasQuarter
-        |> assertFalse
-
     let [<Then>] ``the display reads "(.*)"`` (message:string) =
 
         machine.Value
