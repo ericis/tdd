@@ -92,13 +92,6 @@ module GumballTests =
                 } }
         |> listenForDisplayMessage
 
-    let listenForPropertyChanged (name:string) (notifier:bool ref) (machine:IGumballMachine) =
-        
-        machine.PropertyChanged
-        |> Event.add (fun e -> if e.PropertyName = name then notifier := true)
-
-        machine
-
     let raiseEvents ([<ParamArray>]events:GumballEvent[]) (machine:IGumballMachine) =
         
         // raise events

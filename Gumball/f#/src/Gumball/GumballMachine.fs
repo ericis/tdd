@@ -9,224 +9,149 @@ module GumballMachine =
     open Archient.DesignPatterns.Gumball.Hardware
     open Archient.DesignPatterns.Gumball.Hardware.Events
     open Archient.DesignPatterns.Gumball.Hardware.Events.Output
-    
-    type private GumballMachineState = 
-        {
-            IsEmpty: bool
-            HasQuarter: bool
-            IsDispensing: bool }
 
-    let private onRefill (hardware:IGumballHardware) (state:GumballMachineState ref) =
+    type private IGumballMachineState =
         
-        Trace.TraceInformation(sprintf "onRefill: %A" state)
+        abstract member Hardware : IGumballHardware with get
         
-        hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Start))
+        abstract member OnEvent : event:GumballEvent -> IGumballMachineState
 
-        {
-            IsEmpty = false
-            HasQuarter = state.Value.HasQuarter
-            IsDispensing = false }
-
-    let private onInsertQuarter (hardware:IGumballHardware) (state:GumballMachineState ref) =
+    type private DefaultGumballMachineState(hardware:IGumballHardware) =
         
-        Trace.TraceInformation(sprintf "onInsertQuarter: %A" state)
-
-        let message = 
-            match state.Value.IsEmpty with
-            | true -> Messages.SoldOut.Quarter
-            | false -> 
-                match state.Value.HasQuarter with
-                | true -> Messages.Quarter.Quarter
-                | false -> 
-                    match state.Value.IsDispensing with
-                    | true -> Messages.Crank.Quarter
-                    | false -> Messages.Ready.Quarter
+        new(state:IGumballMachineState) = DefaultGumballMachineState(state.Hardware)
         
-        // return quarter if
-        //   - machine is empty
-        //   - already has a quarter
-        //   - machine is dispensing gumball
-        if state.Value.IsEmpty || state.Value.HasQuarter || state.Value.IsDispensing then
-            hardware.OnNext(Input.ReturnQuarterEvent())
-                    
-        hardware.OnNext(Input.DisplayMessageEvent(message))
+        member me.Hardware = hardware
+        
+        abstract member OnEvent : event:GumballEvent -> IGumballMachineState
+        default me.OnEvent(event:GumballEvent) = me :> IGumballMachineState
+
+        interface IGumballMachineState with
+            override me.Hardware = me.Hardware
+
+            override me.OnEvent(event) =  me.OnEvent(event)
+
+    let private getDoNothingState (state:IGumballMachineState) =
+        new DefaultGumballMachineState(state)
+        :> IGumballMachineState
+
+    let private getCrankTurnedState (readyState:IGumballMachineState) (hasQuarterState:IGumballMachineState) =
         
         {
-            IsEmpty = state.Value.IsEmpty
-            HasQuarter = not state.Value.IsEmpty && not state.Value.IsDispensing
-            IsDispensing = state.Value.IsDispensing }
+            new DefaultGumballMachineState(hasQuarterState) with
+                override me.OnEvent(event:GumballEvent) =
+                    match event with
+                    | :? InsertQuarterEvent ->
+                        me.Hardware.OnNext(Input.ReturnQuarterEvent())
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Crank.Quarter))
+                        me :> IGumballMachineState
+                    | :? EjectQuarterEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Crank.Eject))
+                        me :> IGumballMachineState
+                    | :? TurnCrankEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Crank.Crank))
+                        me :> IGumballMachineState
+                    | :? OutOfGumballsEvent ->
+                        me.Hardware.OnNext(Input.ReturnQuarterEvent())
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.SoldOut.Quarter))
+                        readyState
+                    | :? TakeGumballEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Start))
+                        readyState
+                    | _ -> 
+                        base.OnEvent(event) }
+        :> IGumballMachineState
 
-    let private onEjectQuarter (hardware:IGumballHardware) (state:GumballMachineState ref) =
-        
-        Trace.TraceInformation(sprintf "onEjectQuarter: %A" state)
-
-        let message = 
-            match state.Value.IsEmpty with
-            | true -> Messages.SoldOut.Eject
-            | false -> 
-                match state.Value.HasQuarter with
-                | true -> Messages.Quarter.Eject
-                | false -> 
-                    match state.Value.IsDispensing with
-                    | true -> Messages.Crank.Eject
-                    | false -> Messages.Ready.Eject
-            
-        // return quarter
-        hardware.OnNext(Input.ReturnQuarterEvent())
-
-        hardware.OnNext(Input.DisplayMessageEvent(message))
-
-        {
-            IsEmpty = state.Value.IsEmpty
-            HasQuarter = false
-            IsDispensing = false }
-
-    let private onTurnCrank (hardware:IGumballHardware) (state:GumballMachineState ref) =
-        
-        Trace.TraceInformation(sprintf "onTurnCrank: %A" state)
-        
-        let message = 
-            match state.Value.IsEmpty with
-            | true -> Messages.SoldOut.Crank
-            | false -> 
-                match state.Value.HasQuarter with
-                | true -> Messages.SoldOut.Quarter
-                | false -> 
-                    match state.Value.IsDispensing with
-                    | true -> Messages.Crank.Crank
-                    | false -> Messages.Ready.Crank
-
-        hardware.OnNext(Input.DisplayMessageEvent(message))
+    let private getHasQuarterState (readyState:IGumballMachineState) =
         
         {
-            IsEmpty = state.Value.IsEmpty
-            HasQuarter = state.Value.HasQuarter
-            IsDispensing = false }
+            new DefaultGumballMachineState(readyState) with
+                override me.OnEvent(event:GumballEvent) =
+                    match event with
+                    | :? InsertQuarterEvent ->
+                        me.Hardware.OnNext(Input.ReturnQuarterEvent())
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Quarter.Quarter))
+                        me :> IGumballMachineState
+                    | :? EjectQuarterEvent ->
+                        me.Hardware.OnNext(Input.ReturnQuarterEvent())
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Quarter.Eject))
+                        readyState
+                    | :? TurnCrankEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Quarter.Crank))
+                        getCrankTurnedState readyState me
+                    | :? TakeGumballEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Quarter.Take))
+                        me :> IGumballMachineState
+                    | _ -> 
+                        base.OnEvent(event) }
+        :> IGumballMachineState
 
-    let private onGumballDispensed (hardware:IGumballHardware) (state:GumballMachineState ref) =
-        
-        Trace.TraceInformation(sprintf "onGumballDispensed: %A" state)
-        
-        let message = Messages.Quarter.Crank
-
-        hardware.OnNext(Input.DisplayMessageEvent(message))
-        
-        {
-            IsEmpty = false
-            HasQuarter = false
-            IsDispensing = true }
-
-    let private onOutOfGumballs (hardware:IGumballHardware) (state:GumballMachineState ref) =
-        
-        Trace.TraceInformation(sprintf "onOutOfGumballs: %A" state)
-        
-        if state.Value.HasQuarter then
-            hardware.OnNext(Input.ReturnQuarterEvent())
-
-        let message = Messages.SoldOut.Quarter
-
-        hardware.OnNext(Input.DisplayMessageEvent(message))
+    let private getReadyForQuarterState (state:IGumballMachineState) =
         
         {
-            IsEmpty = true
-            HasQuarter = false
-            IsDispensing = false }
+            new DefaultGumballMachineState(state) with
+                override me.OnEvent(event:GumballEvent) =
+                    match event with
+                    | :? InsertQuarterEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Quarter))
+                        getHasQuarterState me
+                    | :? EjectQuarterEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Eject))
+                        me :> IGumballMachineState
+                    | :? TurnCrankEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Crank))
+                        me :> IGumballMachineState
+                    | :? TakeGumballEvent ->
+                        me.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Take))
+                        me :> IGumballMachineState
+                    | _ -> 
+                        base.OnEvent(event) }
+        :> IGumballMachineState
 
-    let private onTakeGumball (hardware:IGumballHardware) (state:GumballMachineState ref) =
-        
-        Trace.TraceInformation(sprintf "onTakeGumball: %A" state)
-        
-        let message = 
-            match state.Value.IsEmpty with
-            | true -> Messages.SoldOut.Take
-            | false -> 
-                match state.Value.HasQuarter with
-                | true -> Messages.Quarter.Take
-                | false -> 
-                    match state.Value.IsDispensing with
-                    | true -> Messages.Ready.Start
-                    | false -> Messages.Ready.Take
-
-        hardware.OnNext(Input.DisplayMessageEvent(message))
-        
-        {
-            IsEmpty = state.Value.IsEmpty
-            HasQuarter = state.Value.HasQuarter
-            IsDispensing = false }
-
-    let private onDisplay (message:string) (state:GumballMachineState ref) =
-        
-        Trace.TraceInformation(sprintf "onDisplay: %s" message)
+    let private getSoldOutState (state:IGumballMachineState) =
         
         {
-            IsEmpty = state.Value.IsEmpty
-            HasQuarter = state.Value.HasQuarter
-            IsDispensing = state.Value.IsDispensing }
-
-    let private onHardwareEvent (e:GumballEvent) (state:GumballMachineState ref) (onStateChanged:unit->unit) (hardware:IGumballHardware) =
-        
-        Trace.TraceInformation(sprintf "onHardwareEvent: %A" (e.GetType().Name))
-        
-        match e with
-
-        | :? Input.DisplayMessageEvent as displayMessage ->
-            state := onDisplay displayMessage.Value state
-
-        | :? RefillGumballsEvent -> 
-            state := onRefill hardware state
-
-        | :? InsertQuarterEvent ->  
-            state := onInsertQuarter hardware state
-
-        | :? EjectQuarterEvent -> 
-            state := onEjectQuarter hardware state
-
-        | :? TurnCrankEvent -> 
-            state := onTurnCrank hardware state
-
-        | :? GumballDispensedEvent -> 
-            state := onGumballDispensed hardware state
-
-        | :? OutOfGumballsEvent -> 
-            state := onOutOfGumballs hardware state
-
-        | :? TakeGumballEvent -> 
-            state := onTakeGumball hardware state
-        | _ -> 
-            () // unrecognized event
-        
-        onStateChanged()
+            new DefaultGumballMachineState(state) with
+                override me.OnEvent(event:GumballEvent) =
+                    match event with
+                    | :? RefillGumballsEvent ->
+                        state.Hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Start))
+                        getReadyForQuarterState me
+                    | :? InsertQuarterEvent ->
+                        state.Hardware.OnNext(Input.ReturnQuarterEvent())
+                        state.Hardware.OnNext(Input.DisplayMessageEvent(Messages.SoldOut.Quarter))
+                        me :> IGumballMachineState
+                    | :? EjectQuarterEvent ->
+                        state.Hardware.OnNext(Input.DisplayMessageEvent(Messages.SoldOut.Eject))
+                        me :> IGumballMachineState
+                    | :? TurnCrankEvent ->
+                        state.Hardware.OnNext(Input.DisplayMessageEvent(Messages.SoldOut.Crank))
+                        me :> IGumballMachineState
+                    | :? TakeGumballEvent ->
+                        state.Hardware.OnNext(Input.DisplayMessageEvent(Messages.SoldOut.Take))
+                        me :> IGumballMachineState
+                    | _ -> 
+                        base.OnEvent(event)
+        }
+        :> IGumballMachineState
 
     let create (hardware:IGumballHardware) =
-
+        
         // create a default gumball machine state
-        let state = 
-            ref {
-                IsEmpty = true
-                HasQuarter = false
-                IsDispensing = false }
+        let state = ref (getSoldOutState (DefaultGumballMachineState(hardware)))
 
         // need a reference value, b/c of recursive dependencies*
         // 'onStateChanged' depends on 'machine'
         // 'subscription' depends on 'onStateChanged'
         // 'machine' depends on 'subscription'*
         let machine = ref Unchecked.defaultof<IGumballMachine>
-        
-        let propertyChanged = Event<PropertyChangedEventHandler, PropertyChangedEventArgs>()
-
-        // notify clients that the state changed (in case they are intersted)
-        let onStateChanged () =
-            propertyChanged.Trigger(machine.Value, new PropertyChangedEventArgs("State"))
 
         // listen to hardware events
         // mutate the state whenever on known hardware event
         let subscription =
-            hardware.Subscribe(fun e -> onHardwareEvent e state onStateChanged hardware)
+            hardware.Subscribe(fun e -> state := state.Value.OnEvent(e))
         
         machine :=
             { new IGumballMachine with
-                override me.add_PropertyChanged(handler) = propertyChanged.Publish.AddHandler(handler)
-                override me.remove_PropertyChanged(handler) = propertyChanged.Publish.RemoveHandler(handler)
                 override me.Hardware = hardware
                 override me.Dispose() = subscription.Dispose() }
         

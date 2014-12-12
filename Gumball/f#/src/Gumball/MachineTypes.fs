@@ -7,6 +7,5 @@ open Archient.DesignPatterns.Gumball.Hardware
 
 type IGumballMachine =
     inherit IDisposable
-    inherit INotifyPropertyChanged
 
     abstract member Hardware : IGumballHardware with get

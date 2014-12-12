@@ -34,7 +34,7 @@ module QuarterGumballTests =
 
     let [<Fact>] ``quarter: turn crank w/o gumball, displays sold out w/ quarter``() = 
         
-        GumballTests.createFullMachineWithQuarterAndTurnCrank()
+        GumballTests.createFullMachineWithQuarterCrankAndOutOfGumballs()
         |> GumballTests.assertLastDisplayMessageEquals Messages.SoldOut.Quarter
         |> dispose
 
