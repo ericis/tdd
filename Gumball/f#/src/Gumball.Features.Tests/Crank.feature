@@ -55,3 +55,11 @@ Scenario: Crank, Take Gumball
 	And a gumball is dispensed
 	And I try to take a gumball
 	Then the display reads "Quarter for a Gumball"
+
+Scenario: Crank, Take Gumball, Sold out
+	Given I have a new gumball machine
+	When I refill it
+	And I insert a quarter
+	And I turn the crank
+	And a gumball is not dispensed
+	Then the display reads "There are no Gumballs, please pick up your Quarter"
