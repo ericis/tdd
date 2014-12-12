@@ -10,121 +10,151 @@ module GumballMachine =
     open Archient.DesignPatterns.Gumball.Hardware.Events
     open Archient.DesignPatterns.Gumball.Hardware.Events.Output
 
-    let private onRefill (state:GumballMachineState) =
+    let private onRefill (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
+        hardware.OnNext(Input.DisplayMessageEvent(Messages.Ready.Start))
+
         {
             IsEmpty = false
             HasQuarter = false
-            IsDispensing = false
-            Message = Messages.Ready.Start }
+            IsDispensing = false }
 
-    let private onInsertQuarter (state:GumballMachineState) =
+    let private onInsertQuarter (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
         Trace.TraceInformation(sprintf "onInsertQuarter: %A" state)
+            
+        // return quarter if
+        //   - machine is empty
+        //   - already has a quarter
+        //   - machine is dispensing gumball
+        if state.Value.IsEmpty || state.Value.HasQuarter || state.Value.IsDispensing then
+            hardware.OnNext(Input.ReturnQuarterEvent())
 
         let message = 
-            match state.IsEmpty with
+            match state.Value.IsEmpty with
             | true -> Messages.SoldOut.Quarter
             | false -> 
-                match state.HasQuarter with
+                match state.Value.HasQuarter with
                 | true -> Messages.Quarter.Quarter
                 | false -> 
-                    match state.IsDispensing with
+                    match state.Value.IsDispensing with
                     | true -> Messages.Crank.Quarter
                     | false -> Messages.Ready.Quarter
+                    
+        hardware.OnNext(Input.DisplayMessageEvent(message))
 
         {
-            IsEmpty = state.IsEmpty
-            HasQuarter = not state.IsEmpty && not state.IsDispensing
-            IsDispensing = state.IsDispensing
-            Message = message }
+            IsEmpty = state.Value.IsEmpty
+            HasQuarter = not state.Value.IsEmpty && not state.Value.IsDispensing
+            IsDispensing = state.Value.IsDispensing }
 
-    let private onEjectQuarter (state:GumballMachineState) =
+    let private onEjectQuarter (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
         Trace.TraceInformation(sprintf "onEjectQuarter: %A" state)
-        
+            
+        // return quarter
+        hardware.OnNext(Input.ReturnQuarterEvent())
+
         let message = 
-            match state.IsEmpty with
+            match state.Value.IsEmpty with
             | true -> Messages.SoldOut.Eject
             | false -> 
-                match state.HasQuarter with
+                match state.Value.HasQuarter with
                 | true -> Messages.Quarter.Eject
                 | false -> 
-                    match state.IsDispensing with
+                    match state.Value.IsDispensing with
                     | true -> Messages.Crank.Eject
                     | false -> Messages.Ready.Eject
 
-        {
-            IsEmpty = state.IsEmpty
-            HasQuarter = false
-            IsDispensing = false
-            Message = message }
+        hardware.OnNext(Input.DisplayMessageEvent(message))
 
-    let private onTurnCrank (state:GumballMachineState) =
+        {
+            IsEmpty = state.Value.IsEmpty
+            HasQuarter = false
+            IsDispensing = false }
+
+    let private onTurnCrank (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
         Trace.TraceInformation(sprintf "onTurnCrank: %A" state)
         
         let message = 
-            match state.IsEmpty with
+            match state.Value.IsEmpty with
             | true -> Messages.SoldOut.Crank
             | false -> 
-                match state.HasQuarter with
+                match state.Value.HasQuarter with
                 | true -> Messages.SoldOut.Quarter
                 | false -> 
-                    match state.IsDispensing with
+                    match state.Value.IsDispensing with
                     | true -> Messages.Crank.Crank
                     | false -> Messages.Ready.Crank
 
-        {
-            IsEmpty = state.IsEmpty
-            HasQuarter = state.HasQuarter
-            IsDispensing = false
-            Message = message }
+        hardware.OnNext(Input.DisplayMessageEvent(message))
 
-    let private onGumballDispensed (state:GumballMachineState) =
+        {
+            IsEmpty = state.Value.IsEmpty
+            HasQuarter = state.Value.HasQuarter
+            IsDispensing = false }
+
+    let private onGumballDispensed (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
         Trace.TraceInformation(sprintf "onGumballDispensed: %A" state)
         
         let message = Messages.Quarter.Crank
+
+        hardware.OnNext(Input.DisplayMessageEvent(message))
         
         {
             IsEmpty = false
             HasQuarter = false
-            IsDispensing = true
-            Message = message }
+            IsDispensing = true }
 
-    let private onOutOfGumballs (state:GumballMachineState) =
+    let private onOutOfGumballs (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
         Trace.TraceInformation(sprintf "onOutOfGumballs: %A" state)
         
+        if state.Value.HasQuarter then
+            hardware.OnNext(Input.ReturnQuarterEvent())
+
         let message = Messages.SoldOut.Quarter
+
+        hardware.OnNext(Input.DisplayMessageEvent(message))
         
         {
             IsEmpty = true
             HasQuarter = false
-            IsDispensing = false
-            Message = message }
+            IsDispensing = false }
 
-    let private onTakeGumball (state:GumballMachineState) =
+    let private onTakeGumball (hardware:IGumballHardware) (state:GumballMachineState ref) =
         
         Trace.TraceInformation(sprintf "onTakeGumball: %A" state)
         
         let message = 
-            match state.IsEmpty with
+            match state.Value.IsEmpty with
             | true -> Messages.SoldOut.Take
             | false -> 
-                match state.HasQuarter with
+                match state.Value.HasQuarter with
                 | true -> Messages.Quarter.Take
                 | false -> 
-                    match state.IsDispensing with
+                    match state.Value.IsDispensing with
                     | true -> Messages.Ready.Start
                     | false -> Messages.Ready.Take
 
+        hardware.OnNext(Input.DisplayMessageEvent(message))
+
         {
-            IsEmpty = state.IsEmpty
-            HasQuarter = state.HasQuarter
-            IsDispensing = false
-            Message = message }
+            IsEmpty = state.Value.IsEmpty
+            HasQuarter = state.Value.HasQuarter
+            IsDispensing = false }
+
+    let private onDisplay (message:string) (state:GumballMachineState ref) =
+        
+        Trace.TraceInformation(sprintf "onDisplay: %A" state)
+        Trace.TraceInformation(sprintf "message: %s" message)
+        
+        {
+            IsEmpty = state.Value.IsEmpty
+            HasQuarter = state.Value.HasQuarter
+            IsDispensing = state.Value.IsDispensing }
 
     let private onHardwareEvent (e:GumballEvent) (state:GumballMachineState ref) (onStateChanged:unit->unit) (hardware:IGumballHardware) =
         
@@ -132,52 +162,33 @@ module GumballMachine =
         
         match e with
 
+        | :? Input.DisplayMessageEvent as displayMessage ->
+            state := onDisplay displayMessage.Value state
+
         | :? RefillGumballsEvent -> 
-            state := onRefill !state
-            onStateChanged()
+            state := onRefill hardware state
 
         | :? InsertQuarterEvent ->  
-            
-            // return quarter if
-            //   - machine is empty
-            //   - already has a quarter
-            //   - machine is dispensing gumball
-            if state.Value.IsEmpty || state.Value.HasQuarter || state.Value.IsDispensing then
-                hardware.OnNext(Input.ReturnQuarterEvent())
-
-            state := onInsertQuarter !state
-            onStateChanged()
+            state := onInsertQuarter hardware state
 
         | :? EjectQuarterEvent -> 
-            
-            // return quarter
-            hardware.OnNext(Input.ReturnQuarterEvent())
-
-            state := onEjectQuarter !state
-            onStateChanged()
+            state := onEjectQuarter hardware state
 
         | :? TurnCrankEvent -> 
-            state := onTurnCrank !state
-            onStateChanged()
+            state := onTurnCrank hardware state
 
         | :? GumballDispensedEvent -> 
-            state := onGumballDispensed !state
-            onStateChanged()
+            state := onGumballDispensed hardware state
 
         | :? OutOfGumballsEvent -> 
-            
-            if state.Value.HasQuarter then
-                hardware.OnNext(Input.ReturnQuarterEvent())
-
-            state := onOutOfGumballs !state
-            onStateChanged()
+            state := onOutOfGumballs hardware state
 
         | :? TakeGumballEvent -> 
-            state := onTakeGumball !state
-            onStateChanged()
-
+            state := onTakeGumball hardware state
         | _ -> 
             () // unrecognized event
+        
+        onStateChanged()
 
     let create (hardware:IGumballHardware) =
 
@@ -186,9 +197,8 @@ module GumballMachine =
             ref {
                 IsEmpty = true
                 HasQuarter = false
-                IsDispensing = false
-                Message = Messages.SoldOut.Start }
-        
+                IsDispensing = false }
+
         // need a reference value, b/c of recursive dependencies*
         // 'onStateChanged' depends on 'machine'
         // 'subscription' depends on 'onStateChanged'
@@ -213,5 +223,7 @@ module GumballMachine =
                 override me.Hardware = hardware
                 override me.State = !state
                 override me.Dispose() = subscription.Dispose() }
+        
+        hardware.OnNext(Input.DisplayMessageEvent(Messages.SoldOut.Start))
 
         machine.Value

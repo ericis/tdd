@@ -1,10 +1,22 @@
 #Test-Driven Development
 
-These 'Gumball' projects were created as a set of technology solutions focused on a single problem domain using Test-Driven Development (TDD).  The solutions used a test-first methodology rather than writing tests after.  In some cases, a Behavior-Driven Development (BDD) methodology is used.
+These 'Gumball' projects were created as a set of technology solutions focused on a single problem domain using [Test-Driven Development](http://en.wikipedia.org/wiki/Test-driven_development) (TDD).  The solutions used a test-first methodology rather than writing tests after.  In some cases, a [Behavior-Driven Development](http://en.wikipedia.org/wiki/Behavior-driven_development) (BDD) methodology is used.
 
 ## Gumball Machine
 
-The team is tasked with creating a software solution for a gumball machine constrained to use a hardware API provided by an 'external' team and a set of requirements provided by the business' product owner (PO).  These requirements have been captured as User Stories.  User stories are written in the standard form "As a [user]...", "I want [feature]...", and "So that [reason]...".  User stories may alternatively appear as "In order to [reason]...", "As a [user]...", and "I want [feature]".  The IT analyst has worked with the product owner (business) to capture each story's set of Conditions of Acceptance (CoA) in Gherkin syntax (Given-When-Then) to support the IT team with test automation.
+The team is tasked with creating a software solution for a gumball machine constrained to use a hardware API provided by an 'external' team and a set of requirements provided by the business' product owner (PO).  These requirements have been captured as User Stories.
+
+User stories are written in the standard form:
+    1. "As a [user]..."
+    2. "I want [feature]..."
+    3. "So that [reason]...".
+
+User stories may alternatively appear as:
+    1. "In order to [reason]..."
+    2. "As a [user]..."
+    3. "I want [feature]".
+
+The IT analyst has worked with the product owner (business) to capture each story's set of Conditions of Acceptance (CoA) in [Gherkin syntax](https://github.com/cucumber/cucumber/wiki/Gherkin) (Given-When-Then) to support the IT team with test automation.
 
 ### Hardware
 
@@ -22,6 +34,7 @@ I want to be told the machine is sold out
 So that I can avoid losing my money or expecting a gumball
 
 * __Initial State__
+
     Given I have a new gumball machine
     Then it is empty
     And it has no quarter
@@ -216,13 +229,13 @@ So that I get a gumball
 
 ## Technology Solutions
 
-###F-Sharp
+### F# 
 
 F# is a functional language that borrows heavily from traditional, 'purist' functional languages while balancing the necessary Object-Oriented Programming (OOP) paradigm of its .NET framework legacy.  As a result, F# becomes an incredible blend of tooling that supports both Functional and OOP choices as they are needed.
 
 The F# solution provides examples of both unit tests and BDD tests supported by the same test library (DRY principle).
 
-#### F-Sharp Design Decisions
+#### F# Design Decisions
 
  * .NET v4.5
  * Maximize use of functions
@@ -233,7 +246,7 @@ The F# solution provides examples of both unit tests and BDD tests supported by 
    .NET generics and the implementation of IObservable and IObserver make abstracting the hardware device as a set of input and output events simple to implement and to understand.
  * Wrap xUnit assertions as F# functions to streamline a more functional readability of tests
 
-#### F-Sharp Solution Pros
+#### F# Solution Pros
 
  * It's F#! (personal preference) :)
  * Functional design strives to minimize state mutations, which reduces surface area for state transitions and any analysis to discover these transitions, and, according to studies, should also result in the reduction of bugs in the system.  Development must still adhere to this principle, as F# doesn't (can't) strictly enforce this.
@@ -241,11 +254,11 @@ The F# solution provides examples of both unit tests and BDD tests supported by 
  * Read-only state.  F# record-types are used to maintain the state of the gumball machine as a read-only snapshot.
  * Support for inline interface implementations, without the need to define an explicit class implementation.  This helps to maintain the functional API surface while still supporting the ability to group functions as a single dependency in an interface definition that can be passed between functions as a single value.
 
-#### F-Sharp Solution Cons
+#### F# Solution Cons
 
  * TBD: After other languages are implemented
 
-#### F-Sharp Dependencies
+#### F# Dependencies
  
  * Obvious: .NET and Visual Studio
  * xUnit
@@ -257,7 +270,7 @@ The F# solution provides examples of both unit tests and BDD tests supported by 
 
 TODO
 
-### C-Sharp
+### C# 
 
 TODO
 

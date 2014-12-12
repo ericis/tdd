@@ -9,8 +9,7 @@ type GumballMachineState =
     {
         IsEmpty: bool
         HasQuarter: bool
-        IsDispensing: bool
-        Message: string }
+        IsDispensing: bool }
 
 type IGumballMachine =
     inherit IDisposable

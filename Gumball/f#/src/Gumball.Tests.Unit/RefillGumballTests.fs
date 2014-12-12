@@ -16,7 +16,7 @@ module RefillGumballTests =
     let [<Fact>] ``refill: displays no quarter``() = 
         
         GumballTests.createFullMachine()
-        |> assertAreEqual Messages.Ready.Start (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Ready.Start
         |> dispose
 
     let [<Fact>] ``refill: insert quarter, has quarter``() = 
@@ -28,23 +28,23 @@ module RefillGumballTests =
     let [<Fact>] ``refill: insert quarter, displays turn crank``() = 
         
         GumballTests.createFullMachineAndInsertQuarter()
-        |> assertAreEqual Messages.Ready.Quarter (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Ready.Quarter
         |> dispose
 
     let [<Fact>] ``refill: eject quarter, displays no quarter``() = 
         
         GumballTests.createFullMachineAndEjectQuarter()
-        |> assertAreEqual Messages.Ready.Eject (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Ready.Eject
         |> dispose
 
     let [<Fact>] ``refill: turn crank, displays please pay``() = 
         
         GumballTests.createFullMachineAndTurnCrank()
-        |> assertAreEqual Messages.Ready.Crank (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Ready.Crank
         |> dispose
 
     let [<Fact>] ``refill: take gumball displays need a quarter``() = 
         
         GumballTests.createFullMachineAndTakeGumball()
-        |> assertAreEqual Messages.Ready.Take (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Ready.Take
         |> dispose

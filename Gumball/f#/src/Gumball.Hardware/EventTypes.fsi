@@ -19,8 +19,22 @@
 type GumballEvent = 
     new : unit -> GumballEvent
 
+/// Implementation of an abstract, generic Gumball Event
+[<AbstractClass>]
+type GumballEvent<'t> = 
+    inherit GumballEvent
+    new : 't -> GumballEvent<'t>
+    
+    member Value : 't with get
+
 /// Hardware input events
 module Input =
+    
+    /// Event raised to request the hardware to display a message
+    [<Sealed>]
+    type DisplayMessageEvent =
+        inherit GumballEvent<string>
+        new : string -> DisplayMessageEvent
     
     /// Event raised to request the hardware to return the quarter
     [<Sealed>]

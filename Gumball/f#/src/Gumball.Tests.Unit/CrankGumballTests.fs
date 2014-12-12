@@ -35,7 +35,7 @@ module CrankGumballTests =
     let [<Fact>] ``crank w/ gumball: displays gumball is coming``() = 
         
         GumballTests.createFullMachineWithQuarterCrankAndGumballDispensed()
-        |> assertAreEqual Messages.Quarter.Crank (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Quarter.Crank
         |> dispose
 
     let [<Fact>] ``crank w/ gumball: is dispensing``() = 
@@ -59,7 +59,7 @@ module CrankGumballTests =
     let [<Fact>] ``crank w/ gumball: insert 2nd quarter, displays please wait``() = 
         
         GumballTests.createFullMachineWithQuarterCrankGumballDispensedAndInsertQuarter()
-        |> assertAreEqual Messages.Crank.Quarter (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Crank.Quarter
         |> dispose
     
     let [<Fact>] ``crank w/ gumball: insert 2nd quarter, has no quarter``() = 
@@ -71,17 +71,17 @@ module CrankGumballTests =
     let [<Fact>] ``crank w/ gumball: eject quarter, displays too late``() = 
         
         GumballTests.createFullMachineWithQuarterCrankGumballDispensedAndEjectQuarter()
-        |> assertAreEqual Messages.Crank.Eject (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Crank.Eject
         |> dispose
     
     let [<Fact>] ``crank w/ gumball: turn crank 2nd time, displays no``() = 
         
         GumballTests.createFullMachineWithQuarterCrankGumballDispensedAndTurnAgain()
-        |> assertAreEqual Messages.Crank.Crank (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Crank.Crank
         |> dispose
     
     let [<Fact>] ``crank w/ gumball: take gumball, displays no quarter``() = 
         
         GumballTests.createFullMachineWithQuarterCrankGumballDispensedAndTakeGumball()
-        |> assertAreEqual Messages.Ready.Start (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.Ready.Start
         |> dispose

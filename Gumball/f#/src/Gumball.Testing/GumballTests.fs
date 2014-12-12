@@ -5,9 +5,49 @@ module GumballTests =
     open System
     open System.Collections.Generic
 
+    open Archient.Testing.Xunit
     open Archient.DesignPatterns.Gumball
     open Archient.DesignPatterns.Gumball.Hardware
     open Archient.DesignPatterns.Gumball.Hardware.Events
+
+    let private lastMessage = ref ""
+
+    let listenForEvent<'t when 't :> GumballEvent> (handler:'t->unit) (hardware:IGumballHardware) =
+        
+        // add listener
+        // (closure of 'notified')
+        hardware.Add(
+            fun gumballEvent -> 
+                
+                // check if event type matches the type we're listening for
+                match gumballEvent with
+                | :? 't as specificEvent -> handler specificEvent
+                | _ -> ())
+
+        hardware
+
+    let listenFor<'t when 't :> GumballEvent> (notified:bool ref) (machine:IGumballMachine) =
+        
+        machine.Hardware
+        |> listenForEvent<'t> (fun _ -> notified := true)
+        |> ignore
+
+        machine
+
+    let listenForDisplayMessage (message:string ref) (hardware:IGumballHardware) =
+        
+        hardware
+        |> listenForEvent<Input.DisplayMessageEvent> (fun e -> 
+            message := e.Value
+            System.Diagnostics.Trace.TraceInformation(sprintf "Tests: DisplayMessageEvent(%s)" message.Value))
+
+    let getLastDisplayMessage() = 
+        lastMessage.Value
+
+    let assertLastDisplayMessageEquals (expected:string) (machine:IGumballMachine) =
+        
+        machine
+        |> assertAreEqual expected (fun x -> lastMessage.Value)
 
     let createTestHardware() =
         // state: list of subscribers
@@ -45,20 +85,7 @@ module GumballTests =
                             // remove subscriber on disposal
                             ignore <| subscribers.Remove(subscriber)
                 } }
-
-    let listenFor<'t when 't :> GumballEvent> (notified:bool ref) (machine:IGumballMachine) =
-        
-        // add listener
-        // (closure of 'notified')
-        machine.Hardware.Add(
-            fun gumballEvent -> 
-                
-                // check if event type matches the type we're listening for
-                match gumballEvent with
-                | :? 't -> notified := true
-                | _ -> ())
-
-        machine
+        |> listenForDisplayMessage lastMessage
 
     let listenForPropertyChanged (name:string) (notifier:bool ref) (machine:IGumballMachine) =
         

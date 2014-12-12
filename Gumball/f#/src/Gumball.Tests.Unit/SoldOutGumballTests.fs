@@ -19,7 +19,7 @@ module SoldOutGumballTests =
     let [<Fact>] ``new machine: displays empty``() = 
         
         GumballTests.createMachine()
-        |> assertAreEqual Messages.SoldOut.Start (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.SoldOut.Start
         |> dispose
 
     let [<Fact>] ``new machine: has no quarter``() = 
@@ -49,7 +49,7 @@ module SoldOutGumballTests =
     let [<Fact>] ``new machine: insert quarter, displays pickup quarter``() = 
         
         GumballTests.createMachineAndInsertQuarter()
-        |> assertAreEqual Messages.SoldOut.Quarter (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.SoldOut.Quarter
         |> dispose
 
     let [<Fact>] ``new machine: eject quarter, has no quarter``() = 
@@ -61,17 +61,17 @@ module SoldOutGumballTests =
     let [<Fact>] ``new machine: eject quarter, displays no quarter``() = 
         
         GumballTests.createMachineAndEjectQuarter()
-        |> assertAreEqual Messages.SoldOut.Eject (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.SoldOut.Eject
         |> dispose
 
     let [<Fact>] ``new machine: turn crank, displays no gumballs``() = 
         
         GumballTests.createMachineAndTurnCrank()
-        |> assertAreEqual Messages.SoldOut.Crank (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.SoldOut.Crank
         |> dispose
 
     let [<Fact>] ``new machine: take gumball, displays no gumballs``() = 
         
         GumballTests.createMachineAndTakeGumball()
-        |> assertAreEqual Messages.SoldOut.Take (fun x -> x.State.Message)
+        |> GumballTests.assertLastDisplayMessageEquals Messages.SoldOut.Take
         |> dispose

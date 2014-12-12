@@ -86,8 +86,9 @@ module FeatureSteps =
 
     let [<Then>] ``the display reads "(.*)"`` (message:string) =
 
-        machine.Value.State.Message
-        |> assertEqual message
+        machine.Value
+        |> GumballTests.assertLastDisplayMessageEquals message
+        |> ignore
 
     let [<Then>] ``it returns my quarter``() =
 
