@@ -6,22 +6,22 @@ TODO: In progress...
 
 ## Source Implementation
 
- * [Hardware Event Specification](./Gumball.Hardware/Events)
- * [Hardware Specification](./Gumball.Hardware/IGumballHardware.cs)
+ * [Hardware Event Specification](../../c%23/src/Gumball.Hardware/Events)
+ * [Hardware Specification](../../c%23/src/Gumball.Hardware/IGumballHardware.cs)
  * TODO: Software Implementation
 
 ## TODO: Tests
 
 ### BDD Tests
 
- * [Sold Out Features](./Gumball.Tests.Features/SoldOut.feature)
- * [Awaiting Quarter Features](./Gumball.Tests.Features/Refill.feature)
- * [Has Quarter Features](./Gumball.Tests.Features/Quarter.feature)
- * [Crank is Turned Features](./Gumball.Tests.Features/Crank.feature)
+ * [Sold Out Features](../../c%23/src/Gumball.Tests.Features/SoldOut.feature)
+ * [Awaiting Quarter Features](../../c%23/src/Gumball.Tests.Features/Refill.feature)
+ * [Has Quarter Features](../../c%23/src/Gumball.Tests.Features/Quarter.feature)
+ * [Crank is Turned Features](../../c%23/src/Gumball.Tests.Features/Crank.feature)
 
 ### Unit Tests
 
-C# unit tests would be replicating the BDD feature tests and the [F# unit tests](../../f#/src/Gumball.Tests.Unit) already provide a .NET implementation reference (albeit unfamilar to most OOP developers).
+C# unit tests would be replicating the BDD feature tests and the [F# unit tests](../../f%23/src/Gumball.Tests.Unit) already provide a .NET implementation reference (albeit unfamilar to most OOP developers).
 
 ## Design Decisions
 
@@ -41,13 +41,13 @@ C# unit tests would be replicating the BDD feature tests and the [F# unit tests]
 
 ## Solution Cons
 
- * Proliferation of types as compared to [F# design decision to use object expressions](../../f#/src)
+ * Proliferation of types as compared to [F# design decision to use object expressions](../../f%23/src)
  * Lots of "language ceremony" to declare types and variables
 
 ## Dependencies
  
  * Obvious: .NET and Visual Studio
  * MSTest
-   No particular reason other than that the [F# implementation](../../f#/src) used [xUnit](http://github.com/xunit/xunit).
+   No particular reason other than that the [F# implementation](../../f%23/src) used [xUnit](http://github.com/xunit/xunit).
  * [SpecFlow](http://www.specflow.org)
    A Visual Studio extension supports writing BDD tests as readable "Feature" files supported by the Gherkin (Given-When-Then) syntax. SpecFlow feature files must be implemented in a C# project, but test steps are still defined in F# to keep as much language consistency as possible.
