@@ -1,4 +1,4 @@
-[&lArr; TDD](../../README.md)
+[&lArr; TDD](../../)
 
 # C# Test-Driven Development
 
@@ -41,13 +41,13 @@ C# unit tests would be replicating the BDD feature tests and the [F# unit tests]
 
 ## Solution Cons
 
- * Proliferation of types as compared to [F# design decision to use object expressions](../../f#/src/README.md)
+ * Proliferation of types as compared to [F# design decision to use object expressions](../../f#/src/)
  * Lots of "language ceremony" to declare types and variables
 
 ## Dependencies
  
  * Obvious: .NET and Visual Studio
  * MSTest
-   No particular reason other than that the [F# implementation](../../f#/src/README.md) used [xUnit](http://github.com/xunit/xunit).
+   No particular reason other than that the [F# implementation](../../f#/src/) used [xUnit](http://github.com/xunit/xunit).
  * [SpecFlow](http://www.specflow.org)
    A Visual Studio extension supports writing BDD tests as readable "Feature" files supported by the Gherkin (Given-When-Then) syntax. SpecFlow feature files must be implemented in a C# project, but test steps are still defined in F# to keep as much language consistency as possible.
