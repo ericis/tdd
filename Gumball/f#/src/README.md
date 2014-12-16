@@ -1,4 +1,4 @@
-[&lArr; TDD](../../README.md)
+[&lArr; TDD](../../)
 
 # F# Test-Driven Development
 
