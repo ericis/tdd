@@ -20,7 +20,7 @@ module Input =
         inherit GumballEvent()
 
 module Output =
-
+    
     [<Sealed>]
     type InsertQuarterEvent() =
         inherit GumballEvent()

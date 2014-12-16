@@ -229,55 +229,8 @@ So that I get a gumball
 
 ## Technology Solutions
 
-### F# 
-
-F# is a functional language that borrows heavily from traditional, 'purist' functional languages while balancing the necessary Object-Oriented Programming (OOP) paradigm of its .NET framework legacy.  As a result, F# becomes an incredible blend of tooling that supports both Functional and OOP choices as they are needed.
-
-The F# solution provides examples of both unit tests and BDD tests supported by the same test library (DRY principle).
-
-#### F# Design Decisions
-
- * .NET v4.5
- * Maximize use of functions
- * Minimize mutation of state
- * Implement state machine as simple functions and state transitions (input changes at output) associated with hardware events.  The OOP design pattern for state machines can still apply and could possibly benefit the design.  But, the simplicity and clarity (readability) of the functional implementation seemed sufficient.
- * Ensure hardware dependency can be swapped with a test-double (stub/mock/fake)
- * Event-Driven Architecture: Publish/Subscribe
-   .NET generics and the implementation of IObservable and IObserver make abstracting the hardware device as a set of input and output events simple to implement and to understand.
- * Wrap xUnit assertions as F# functions to streamline a more functional readability of tests
-
-#### F# Solution Pros
-
- * It's F#! (personal preference) :)
- * Functional design strives to minimize state mutations, which reduces surface area for state transitions and any analysis to discover these transitions, and, according to studies, should also result in the reduction of bugs in the system.  Development must still adhere to this principle, as F# doesn't (can't) strictly enforce this.
- * Support for ``` ``readable method names``() ``` using double backtick quotes (``).  Use is limited to create readable test method names and is never used in application code.  This eliminated the duplication of SpecFlow test names (C# requires an attribute with the readable name and a method name).
- * Read-only state.  F# record-types are used to maintain the state of the gumball machine as a read-only snapshot.
- * Support for inline interface implementations, without the need to define an explicit class implementation.  This helps to maintain the functional API surface while still supporting the ability to group functions as a single dependency in an interface definition that can be passed between functions as a single value.
-
-#### F# Solution Cons
-
- * TBD: After other languages are implemented
-
-#### F# Dependencies
- 
- * Obvious: .NET and Visual Studio
- * xUnit
-   Authors of the popular "xUnit Test Patterns", the xUnit library provides a solid platform for test automation.
- * SpecFlow
-   A Visual Studio extension supports writing BDD tests as readable "Feature" files supported by the Gherkin (Given-When-Then) syntax. SpecFlow feature files must be implemented in a C# project, but test steps are still defined in F# to keep as much language consistency as possible.
-
-### Java
-
-TODO
-
-### C# 
-
-TODO
-
-### Javascript
-
-TODO
-
-### Python
-
-TODO
+ * [F#](./Gumball/f%23/src)
+ * Java (to-do, maybe)
+ * C# (to-do, maybe)
+ * Javascript (to-do, maybe)
+ * Python (to-do, maybe)

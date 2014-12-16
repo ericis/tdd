@@ -14,74 +14,77 @@
 *
 **********************************************************)
 
-/// Implementation of an abstract Gumball Event
+/// Base class raised whenever a gumball hardware event occurs.
 [<AbstractClass>]
 type GumballEvent = 
     new : unit -> GumballEvent
-
-/// Implementation of an abstract, generic Gumball Event
+    
+/// <summary>Generic base class raised whenever a gumball hardware event occurs.</summary>
+/// <typeparam name="t">The type of argument passed in the event</typeparam>
 [<AbstractClass>]
 type GumballEvent<'t> = 
     inherit GumballEvent
     new : 't -> GumballEvent<'t>
     
+    /// Gets the argument value passed in the event
     member Value : 't with get
 
-/// Hardware input events
+/// All hardware inputs received from outside sources
 module Input =
     
-    /// Event raised to request the hardware to display a message
+    /// Raised to request that the hardware display a message
     [<Sealed>]
     type DisplayMessageEvent =
         inherit GumballEvent<string>
         new : string -> DisplayMessageEvent
     
-    /// Event raised to request the hardware to return the quarter
+    /// Raised to request that the hardware return a quarter
     [<Sealed>]
     type ReturnQuarterEvent =
         inherit GumballEvent
         new : unit -> ReturnQuarterEvent
-
-/// Hardware output events
+        
+/// <summary>All hardware outputs originating from the hardware</summary>
+/// <remarks>Automation tests will have to use these events explicitly to simulate external hardware events</summary>
 module Output =
 
-    /// Event raised when a quarter is inserted
+    /// Raised from the hardware when a quarter is inserted
     [<Sealed>]
     type InsertQuarterEvent =
         inherit GumballEvent
         new : unit -> InsertQuarterEvent
-
-    /// Event raised when the eject quarter button is pressed
+        
+    /// Raised from the hardware when the 'eject quarter' button is pressed
     [<Sealed>]
     type EjectQuarterEvent =
         inherit GumballEvent
         new : unit -> EjectQuarterEvent
-
-    /// Event raised when the refill gumballs button is pressed
+        
+    /// Raised from the hardware when the 'refill' button is pressed
     [<Sealed>]
     type RefillGumballsEvent =
         inherit GumballEvent
         new : unit -> RefillGumballsEvent
-
-    /// Event raised when the crank is turned
+        
+    /// Raised from the hardware when the gumball 'crank' is turned
     [<Sealed>]
     type TurnCrankEvent =
         inherit GumballEvent
         new : unit -> TurnCrankEvent
-
-    /// Event raised when a gumball is dispensed
+        
+    /// Raised from the hardware when a gumball is dispensed for pick up
     [<Sealed>]
     type GumballDispensedEvent =
         inherit GumballEvent
         new : unit -> GumballDispensedEvent
-
-    /// Event raised when the machine is out of gumballs
+        
+    /// Raised from the hardware when it detects there are no more gumballs that can be dispensed
     [<Sealed>]
     type OutOfGumballsEvent =
         inherit GumballEvent
         new : unit -> OutOfGumballsEvent
-
-    /// Event raised when gumballs are waiting for pick-up
+        
+    /// Raised from the hardware when the gumball door is opened
     [<Sealed>]
     type TakeGumballEvent =
         inherit GumballEvent

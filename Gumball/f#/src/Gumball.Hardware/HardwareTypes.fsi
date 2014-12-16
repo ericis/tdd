@@ -22,8 +22,8 @@ open Archient.DesignPatterns.Gumball.Hardware.Events
 [<Interface>]
 type IGumballHardware =
     
-    // can raise the events from the inside
+    // can raise internal events that others can listen to
     inherit IObservable<GumballEvent>
     
-    // can observe the events from the outside
+    // can observe external events
     inherit IObserver<GumballEvent>
