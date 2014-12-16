@@ -231,6 +231,6 @@ So that I get a gumball
 
  * [F#](./f%23/src)
  * Java (to-do, maybe)
- * C# (to-do, maybe)
+ * [C#](./c%23/src)
  * Javascript (to-do, maybe)
  * Python (to-do, maybe)
