@@ -1,4 +1,4 @@
-[&lArr; TDD](../../README.md)
+[&lArr; TDD](../../)
 
 # F# Test-Driven Development
 
@@ -8,26 +8,26 @@ The F# solution provides examples of both unit tests and BDD tests supported by 
 
 ## Source Implementation
 
- * [Hardware Event Specification](Gumball.Hardware/EventTypes.fsi)
- * [Hardware Specification](Gumball.Hardware/HardwareTypes.fsi)
- * [Software Implementation](Gumball/GumballMachine.fs)
+ * [Hardware Event Specification](../../f%23/src/Gumball.Hardware/EventTypes.fsi)
+ * [Hardware Specification](../../f%23/src/Gumball.Hardware/HardwareTypes.fsi)
+ * [Software Implementation](../../f%23/src/Gumball/GumballMachine.fs)
    (*start with the 'create' function at the bottom)
 
 ## Tests
 
 ### BDD Tests
 
- * [Sold Out Features](Gumball.Tests.Features/SoldOut.feature)
- * [Awaiting Quarter Features](Gumball.Tests.Features/Refill.feature)
- * [Has Quarter Features](Gumball.Tests.Features/Quarter.feature)
- * [Crank is Turned Features](Gumball.Tests.Features/Crank.feature)
+ * [Sold Out Features](../../f%23/src/Gumball.Tests.Features/SoldOut.feature)
+ * [Awaiting Quarter Features](../../f%23/src/Gumball.Tests.Features/Refill.feature)
+ * [Has Quarter Features](../../f%23/src/Gumball.Tests.Features/Quarter.feature)
+ * [Crank is Turned Features](../../f%23/src/Gumball.Tests.Features/Crank.feature)
 
 ### Unit Tests
 
- * [Sold Out](Gumball.Tests.Unit/SoldOutGumballTests.fs)
- * [Awaiting Quarter](Gumball.Tests.Unit/RefillGumballTests.fs)
- * [Has Quarter](Gumball.Tests.Unit/QuarterGumballTests.fs)
- * [Crank is Turned](Gumball.Tests.Unit/CrankGumballTests.fs)
+ * [Sold Out](../../f%23/src/Gumball.Tests.Unit/SoldOutGumballTests.fs)
+ * [Awaiting Quarter](../../f%23/src/Gumball.Tests.Unit/RefillGumballTests.fs)
+ * [Has Quarter](../../f%23/src/Gumball.Tests.Unit/QuarterGumballTests.fs)
+ * [Crank is Turned](../../f%23/src/Gumball.Tests.Unit/CrankGumballTests.fs)
 
 ## Design Decisions
 
