@@ -65,34 +65,34 @@ module FeatureSteps =
         
         ignore <| TestState.createMachine()
 
-    let [<When>] ``I refill it``() =
+    let [<Given;When>] ``I refill it``() =
         
         TestState.raiseEvent<Output.RefillGumballsEvent>()
 
-    let [<When>] ``I insert a quarter``() =
+    let [<Given;When>] ``I insert a quarter``() =
         
         // reset state flag for event
         TestState.resetReceivedReturnQuarterEventListener()
         
         TestState.raiseEvent<Output.InsertQuarterEvent>()
 
-    let [<When>] ``I eject a quarter``() =
+    let [<Given;When>] ``I eject a quarter``() =
         
         TestState.raiseEvent<Output.EjectQuarterEvent>()
 
-    let [<When>] ``I turn the crank``() =
+    let [<Given;When>] ``I turn the crank``() =
         
         TestState.raiseEvent<Output.TurnCrankEvent>()
 
-    let [<When>] ``a gumball is dispensed``() =
+    let [<Given;When>] ``a gumball is dispensed``() =
         
         TestState.raiseEvent<Output.GumballDispensedEvent>()
 
-    let [<When>] ``a gumball is not dispensed``() =
+    let [<Given;When>] ``a gumball is not dispensed``() =
         
         TestState.raiseEvent<Output.OutOfGumballsEvent>()
 
-    let [<When>] ``I try to take a gumball``() =
+    let [<Given;When>] ``I try to take a gumball``() =
         
         TestState.raiseEvent<Output.TakeGumballEvent>()
 

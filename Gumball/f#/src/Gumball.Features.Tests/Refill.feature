@@ -10,24 +10,24 @@ Scenario: Refill Initial State
 
 Scenario: Refill, Insert Quarter
 	Given I have a new gumball machine
-	When I refill it
-	And I insert a quarter
+	And I refill it
+	When I insert a quarter
 	Then the display reads "Turn the Crank for a Gumball"
 
 Scenario: Refill, Eject Quarter
 	Given I have a new gumball machine
-	When I refill it
-	And I eject a quarter
+	And I refill it
+	When I eject a quarter
 	Then the display reads "You haven't inserted a Quarter yet"
 
 Scenario: Refill, Turn Crank
 	Given I have a new gumball machine
-	When I refill it
-	And I turn the crank
+	And I refill it
+	When I turn the crank
 	Then the display reads "You need to pay first"
 
 Scenario: Refill, Take Gumball
 	Given I have a new gumball machine
-	When I refill it
-	And I try to take a gumball
+	And I refill it
+	When I try to take a gumball
 	Then the display reads "Quarter first, then a Gumball"

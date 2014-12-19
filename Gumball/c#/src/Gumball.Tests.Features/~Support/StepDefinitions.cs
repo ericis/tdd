@@ -35,12 +35,14 @@
             this.gumballMachine = GumballMachineFactory.Create(hardware);
         }
 
+        [Given(@"I refill it")]
         [When(@"I refill it")]
         public void WhenIRefillIt()
         {
             this.hardware.OnNext(new RefillGumballsEvent());
         }
 
+        [Given(@"I insert a quarter")]
         [When(@"I insert a quarter")]
         public void WhenIInsertAQuarter()
         {
@@ -49,30 +51,35 @@
             this.hardware.OnNext(new InsertQuarterEvent());
         }
 
+        [Given(@"I turn the crank")]
         [When(@"I turn the crank")]
         public void WhenITurnTheCrank()
         {
             this.hardware.OnNext(new TurnCrankEvent());
         }
 
+        [Given(@"a gumball is dispensed")]
         [When(@"a gumball is dispensed")]
         public void WhenAGumballIsDispensed()
         {
             this.hardware.OnNext(new GumballDispensedEvent());
         }
 
+        [Given(@"a gumball is not dispensed")]
         [When(@"a gumball is not dispensed")]
         public void WhenAGumballIsNotDispensed()
         {
             this.hardware.OnNext(new OutOfGumballsEvent());
         }
 
+        [Given(@"I eject a quarter")]
         [When(@"I eject a quarter")]
         public void WhenIEjectAQuarter()
         {
             this.hardware.OnNext(new EjectQuarterEvent());
         }
 
+        [Given(@"I try to take a gumball")]
         [When(@"I try to take a gumball")]
         public void WhenITryToTakeAGumball()
         {
